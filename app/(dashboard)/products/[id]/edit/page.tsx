@@ -1,8 +1,14 @@
-import { prisma } from "@/lib/db/prisma";
-import { ProductForm } from "@/components/forms/ProductForm";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { notFound } from "next/navigation";
-import { EditProductClient } from "./EditProductClient";
+import { prisma } from '@/lib/db/prisma';
+import { ProductForm } from '@/components/forms/ProductForm';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { notFound } from 'next/navigation';
+import { EditProductClient } from './EditProductClient';
 
 async function getProduct(id: string) {
   const product = await prisma.product.findUnique({
@@ -14,9 +20,10 @@ async function getProduct(id: string) {
 export default async function EditProductPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const product = await getProduct(params.id);
+  const { id } = await params;
+  const product = await getProduct(id);
 
   if (!product) {
     notFound();
@@ -45,4 +52,3 @@ export default async function EditProductPage({
     </div>
   );
 }
-

@@ -5,7 +5,7 @@ import fs from "fs/promises";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params }: { params: Promise<{ filename: string }> }
 ) {
   try {
     const session = await auth();
@@ -17,7 +17,8 @@ export async function DELETE(
     }
 
     // Extraer solo el nombre del archivo de la ruta completa
-    const filename = params.filename.split("/").pop() || params.filename;
+    const { filename: filenameParam } = await params;
+    const filename = filenameParam.split("/").pop() || filenameParam;
     
     await deleteUploadedFile(filename);
 
