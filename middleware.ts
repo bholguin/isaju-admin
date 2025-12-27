@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server';
 
 export default async function middleware(request: NextRequest) {
   const session = await auth();
+
   const { pathname } = request.nextUrl;
 
   // Permitir acceso público a GET /api/products y GET /api/products/[id] (para el sitio Astro)
