@@ -6,12 +6,11 @@ import { auth } from '@/lib/auth';
 // GET /api/products/[id] - Obtener un producto
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
     const product = await prisma.product.findUnique({
-      where: { id },
+      where: { id: params.id },
     });
 
     if (!product) {
@@ -33,7 +32,7 @@ export async function GET(
 // PUT /api/products/[id] - Actualizar producto
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await auth();
@@ -44,12 +43,11 @@ export async function PUT(
       );
     }
 
-    const { id } = await params;
     const body = await request.json();
     const validatedData = productSchema.parse(body);
 
     const product = await prisma.product.update({
-      where: { id },
+      where: { id: params.id },
       data: validatedData,
     });
 
@@ -82,7 +80,7 @@ export async function PUT(
 // DELETE /api/products/[id] - Eliminar producto
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     const session = await auth();
@@ -93,9 +91,8 @@ export async function DELETE(
       );
     }
 
-    const { id } = await params;
     await prisma.product.delete({
-      where: { id },
+      where: { id: params.id },
     });
 
     return NextResponse.json({

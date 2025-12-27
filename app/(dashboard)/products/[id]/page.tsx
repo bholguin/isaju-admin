@@ -1,10 +1,10 @@
-import { prisma } from "@/lib/db/prisma";
-import { notFound } from "next/navigation";
-import { ProductImage } from "@/components/ui/ProductImage";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Edit, ArrowLeft } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { prisma } from '@/lib/db/prisma';
+import { notFound } from 'next/navigation';
+import { ProductImage } from '@/components/ui/ProductImage';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Edit, ArrowLeft } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 async function getProduct(id: string) {
   const product = await prisma.product.findUnique({
@@ -16,10 +16,9 @@ async function getProduct(id: string) {
 export default async function ProductDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = await params;
-  const product = await getProduct(id);
+  const product = await getProduct(params.id);
 
   if (!product) {
     notFound();
@@ -55,7 +54,9 @@ export default async function ProductDetailPage({
             {product.images.length > 0 ? (
               <div className="grid grid-cols-2 gap-4">
                 {product.images.map((image, index) => (
-                  <div key={index} className="relative aspect-square rounded-lg overflow-hidden">
+                  <div
+                    key={index}
+                    className="relative aspect-square rounded-lg overflow-hidden">
                     <ProductImage
                       src={image}
                       alt={`${product.name} - Imagen ${index + 1}`}
@@ -77,27 +78,32 @@ export default async function ProductDetailPage({
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-500">Precio</label>
+              <label className="text-sm font-medium text-gray-500">
+                Precio
+              </label>
               <p className="text-2xl font-bold mt-1">{product.price}</p>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-500">Estado</label>
+              <label className="text-sm font-medium text-gray-500">
+                Estado
+              </label>
               <div className="mt-1">
                 <span
                   className={`px-3 py-1 text-sm font-medium rounded ${
                     product.published
-                      ? "bg-green-100 text-green-800"
-                      : "bg-yellow-100 text-yellow-800"
-                  }`}
-                >
-                  {product.published ? "Publicado" : "Borrador"}
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                  {product.published ? 'Publicado' : 'Borrador'}
                 </span>
               </div>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-500">Descripción</label>
+              <label className="text-sm font-medium text-gray-500">
+                Descripción
+              </label>
               <p className="mt-1 text-gray-700 whitespace-pre-wrap">
                 {product.description}
               </p>
@@ -108,20 +114,20 @@ export default async function ProductDetailPage({
                 <div>
                   <label className="text-gray-500">Creado</label>
                   <p className="font-medium mt-1">
-                    {new Date(product.createdAt).toLocaleDateString("es-ES", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
+                    {new Date(product.createdAt).toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
                     })}
                   </p>
                 </div>
                 <div>
                   <label className="text-gray-500">Actualizado</label>
                   <p className="font-medium mt-1">
-                    {new Date(product.updatedAt).toLocaleDateString("es-ES", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
+                    {new Date(product.updatedAt).toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
                     })}
                   </p>
                 </div>
@@ -133,4 +139,3 @@ export default async function ProductDetailPage({
     </div>
   );
 }
-

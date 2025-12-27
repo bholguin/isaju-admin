@@ -20,10 +20,9 @@ async function getProduct(id: string) {
 export default async function EditProductPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = await params;
-  const product = await getProduct(id);
+  const product = await getProduct(params.id);
 
   if (!product) {
     notFound();
