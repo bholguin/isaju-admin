@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { ProductImage } from "@/components/ui/ProductImage";
-import { X, Upload, ImageIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { ProductImage } from '@/components/ui/ProductImage';
+import { X, Upload, ImageIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface ImageUploadProps {
   images: string[];
@@ -30,12 +30,12 @@ export function ImageUpload({
       setUploading(true);
       const formData = new FormData();
       acceptedFiles.forEach((file) => {
-        formData.append("files", file);
+        formData.append('files', file);
       });
 
       try {
-        const response = await fetch("/api/upload", {
-          method: "POST",
+        const response = await fetch('/api/upload', {
+          method: 'POST',
           body: formData,
         });
 
@@ -44,11 +44,11 @@ export function ImageUpload({
         if (data.success) {
           onImagesChange([...images, ...data.files]);
         } else {
-          alert(data.error || "Error al subir imágenes");
+          alert(data.error || 'Error al subir imágenes');
         }
       } catch (error) {
-        console.error("Error uploading images:", error);
-        alert("Error al subir imágenes");
+        console.error('Error uploading images:', error);
+        alert('Error al subir imágenes');
       } finally {
         setUploading(false);
       }
@@ -59,9 +59,9 @@ export function ImageUpload({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/jpeg": [".jpg", ".jpeg"],
-      "image/png": [".png"],
-      "image/webp": [".webp"],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/webp': ['.webp'],
     },
     maxSize: 5 * 1024 * 1024, // 5MB
     multiple: true,
@@ -75,28 +75,53 @@ export function ImageUpload({
 
     // Eliminar del servidor
     try {
-      const filename = imageToRemove.split("/").pop();
-      if (filename) {
-        await fetch(`/api/upload/${filename}`, {
-          method: "DELETE",
-        });
+      // Si es una URL completa (Blob en producción), enviar como query param
+      // Si es una ruta relativa (filesystem en desarrollo), enviar como path param
+      const isUrl =
+        imageToRemove.startsWith('http://') ||
+        imageToRemove.startsWith('https://');
+
+      if (isUrl) {
+        // URL completa - enviar como query param
+        await fetch(
+          `/api/upload/${encodeURIComponent(
+            imageToRemove.split('/').pop() || ''
+          )}?url=${encodeURIComponent(imageToRemove)}`,
+          {
+            method: 'DELETE',
+          }
+        );
+      } else {
+        // Ruta relativa - enviar como path param
+        const filename = imageToRemove.split('/').pop();
+        if (filename) {
+          await fetch(`/api/upload/${filename}`, {
+            method: 'DELETE',
+          });
+        }
       }
     } catch (error) {
-      console.error("Error deleting image:", error);
+      console.error('Error deleting image:', error);
     }
   };
 
   const moveImageUp = (index: number) => {
     if (index === 0) return;
     const newImages = [...images];
-    [newImages[index - 1], newImages[index]] = [newImages[index], newImages[index - 1]];
+    [newImages[index - 1], newImages[index]] = [
+      newImages[index],
+      newImages[index - 1],
+    ];
     onImagesChange(newImages);
   };
 
   const moveImageDown = (index: number) => {
     if (index === images.length - 1) return;
     const newImages = [...images];
-    [newImages[index], newImages[index + 1]] = [newImages[index + 1], newImages[index]];
+    [newImages[index], newImages[index + 1]] = [
+      newImages[index + 1],
+      newImages[index],
+    ];
     onImagesChange(newImages);
   };
 
@@ -106,15 +131,14 @@ export function ImageUpload({
       <div
         {...getRootProps()}
         className={cn(
-          "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors",
+          'border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors',
           isDragActive
-            ? "border-secondary bg-secondary/10"
-            : "border-gray-300 hover:border-gray-400",
+            ? 'border-secondary bg-secondary/10'
+            : 'border-gray-300 hover:border-gray-400',
           uploading || images.length >= maxImages
-            ? "opacity-50 cursor-not-allowed"
-            : ""
-        )}
-      >
+            ? 'opacity-50 cursor-not-allowed'
+            : ''
+        )}>
         <input {...getInputProps()} />
         <div className="flex flex-col items-center gap-2">
           {uploading ? (
@@ -124,8 +148,8 @@ export function ImageUpload({
           )}
           <p className="text-sm text-gray-600">
             {isDragActive
-              ? "Suelta las imágenes aquí"
-              : "Arrastra imágenes aquí o haz clic para seleccionar"}
+              ? 'Suelta las imágenes aquí'
+              : 'Arrastra imágenes aquí o haz clic para seleccionar'}
           </p>
           <p className="text-xs text-gray-500">
             JPG, PNG o WebP (máx. 5MB cada una, máx. {maxImages} imágenes)
@@ -138,8 +162,7 @@ export function ImageUpload({
           {images.map((image, index) => (
             <div
               key={index}
-              className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200"
-            >
+              className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200">
               <ProductImage
                 src={image}
                 alt={`Imagen ${index + 1}`}
@@ -148,8 +171,7 @@ export function ImageUpload({
               />
               <button
                 onClick={() => removeImage(index)}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
+                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <X className="h-4 w-4" />
               </button>
               <div className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
@@ -159,8 +181,7 @@ export function ImageUpload({
                 <button
                   onClick={() => moveImageUp(index)}
                   className="absolute top-2 left-2 bg-secondary text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
-                  title="Mover arriba"
-                >
+                  title="Mover arriba">
                   ↑
                 </button>
               )}
@@ -168,8 +189,7 @@ export function ImageUpload({
                 <button
                   onClick={() => moveImageDown(index)}
                   className="absolute bottom-10 left-2 bg-secondary text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
-                  title="Mover abajo"
-                >
+                  title="Mover abajo">
                   ↓
                 </button>
               )}
@@ -180,4 +200,3 @@ export function ImageUpload({
     </div>
   );
 }
-

@@ -41,7 +41,14 @@ Edita `.env.local` con tus credenciales:
 DATABASE_URL="postgresql://user:password@localhost:5432/isaju_admin?schema=public"
 AUTH_SECRET="tu-secret-key-aqui" # Genera con: openssl rand -base64 32
 NEXTAUTH_URL="http://localhost:3000"
+
+# Para producción en Vercel (opcional - solo si usas Vercel Blob)
+# BLOB_READ_WRITE_TOKEN="vercel_blob_token_aqui"
 ```
+
+**Nota sobre almacenamiento de imágenes:**
+- En **desarrollo**: Las imágenes se guardan localmente en `public/uploads/`
+- En **producción (Vercel)**: Se usa Vercel Blob Storage automáticamente si está configurado `BLOB_READ_WRITE_TOKEN`
 
 3. **Configurar la base de datos:**
 

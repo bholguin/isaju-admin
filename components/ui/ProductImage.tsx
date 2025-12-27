@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useState } from "react";
+import Image from 'next/image';
+import { useState } from 'react';
 
 interface ProductImageProps {
   src: string;
@@ -19,21 +19,22 @@ export function ProductImage({
   fill,
   width,
   height,
-  className = "",
+  className = '',
   ...props
 }: ProductImageProps) {
   const [imgSrc, setImgSrc] = useState(src);
   const [hasError, setHasError] = useState(false);
 
   // Si la imagen empieza con /uploads, es una imagen local
-  const isLocalImage = imgSrc.startsWith("/uploads");
+  // Si es una URL completa de Blob, no es local
+  const isLocalImage =
+    imgSrc.startsWith('/uploads') && !imgSrc.startsWith('http');
 
   if (hasError) {
     return (
       <div
         className={`bg-gray-200 flex items-center justify-center ${className}`}
-        style={fill ? undefined : { width, height }}
-      >
+        style={fill ? undefined : { width, height }}>
         <span className="text-gray-400 text-xs">Imagen no disponible</span>
       </div>
     );
@@ -48,7 +49,7 @@ export function ProductImage({
         className={className}
         unoptimized={isLocalImage}
         onError={() => {
-          console.error("Error loading image:", imgSrc);
+          console.error('Error loading image:', imgSrc);
           setHasError(true);
         }}
         {...props}
@@ -65,12 +66,10 @@ export function ProductImage({
       className={className}
       unoptimized={isLocalImage}
       onError={() => {
-        console.error("Error loading image:", imgSrc);
+        console.error('Error loading image:', imgSrc);
         setHasError(true);
       }}
       {...props}
     />
   );
 }
-
-

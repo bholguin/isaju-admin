@@ -1,9 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.public.blob.vercel-storage.com',
+      },
+    ],
     domains: ['localhost'],
-    // Para desarrollo, permitir imágenes locales
+    // Para desarrollo, permitir imágenes locales sin optimización
     unoptimized: process.env.NODE_ENV === 'development',
     // Configuración adicional para imágenes locales
     dangerouslyAllowSVG: true,
