@@ -56,12 +56,12 @@ export default async function ProductDetailPage({
                 {product.images.map((image, index) => (
                   <div
                     key={index}
-                    className="relative aspect-square rounded-lg overflow-hidden">
+                    className="relative aspect-square rounded-lg overflow-hidden bg-gray-50">
                     <ProductImage
                       src={image}
                       alt={`${product.name} - Imagen ${index + 1}`}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                     />
                   </div>
                 ))}

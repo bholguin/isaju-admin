@@ -163,12 +163,12 @@ export function ImageUpload({
           {images.map((image, index) => (
             <div
               key={index}
-              className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200">
+              className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
               <ProductImage
                 src={image}
                 alt={`Imagen ${index + 1}`}
                 fill
-                className="object-cover"
+                className="object-contain"
               />
               <button
                 onClick={() => removeImage(index)}

@@ -13,7 +13,7 @@ export async function optimizeProductImage(
 }> {
   try {
     const image = sharp(buffer, { failOn: 'none' }).rotate();
-    const metadata = await image.metadata();
+    const metadata = await image.clone().metadata();
     const width = metadata.width ?? 0;
     const height = metadata.height ?? 0;
 
@@ -27,10 +27,11 @@ export async function optimizeProductImage(
 
     let pipeline = image;
     if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
-      pipeline = pipeline.resize(MAX_DIMENSION, MAX_DIMENSION, {
-        fit: 'inside',
-        withoutEnlargement: true,
-      });
+      const resize =
+        width >= height
+          ? { width: MAX_DIMENSION, withoutEnlargement: true }
+          : { height: MAX_DIMENSION, withoutEnlargement: true };
+      pipeline = pipeline.resize(resize);
     }
 
     const optimized = await pipeline
