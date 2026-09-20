@@ -8,10 +8,20 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const published = searchParams.get("published");
+    const estado = searchParams.get("estado");
 
     const where: any = {};
     if (published === "true") {
       where.published = true;
+    }
+    if (published === "false") {
+      where.published = false;
+    }
+    if (estado === "true") {
+      where.estado = true;
+    }
+    if (estado === "false") {
+      where.estado = false;
     }
 
     const products = await prisma.product.findMany({
