@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { generateFilename, uploadFile } from '@/lib/upload';
+import { optimizeProductImage } from '@/lib/optimize-image';
 
 export async function POST(request: NextRequest) {
   try {
@@ -58,9 +59,14 @@ export async function POST(request: NextRequest) {
 
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
+      const optimized = await optimizeProductImage(buffer, file.type);
 
-      const filename = generateFilename(file.name);
-      const url = await uploadFile(filename, buffer, file.type);
+      const filename = generateFilename(file.name, optimized.extension);
+      const url = await uploadFile(
+        filename,
+        optimized.buffer,
+        optimized.contentType
+      );
       uploadedFiles.push(url);
     }
 

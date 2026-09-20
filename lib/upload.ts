@@ -47,10 +47,13 @@ export async function deleteUploadedFile(urlOrFilename: string): Promise<void> {
   }
 }
 
-export function generateFilename(originalName: string): string {
+export function generateFilename(
+  originalName: string,
+  extension?: string
+): string {
   const timestamp = Date.now();
   const randomString = Math.random().toString(36).substring(2, 15);
-  const ext = path.extname(originalName);
+  const ext = extension || path.extname(originalName) || '.jpg';
   return `products/${timestamp}-${randomString}${ext}`;
 }
 
@@ -71,6 +74,7 @@ export async function uploadFile(
     // Usar sistema de archivos local en desarrollo
     await ensureUploadDir();
     const filePath = getUploadPath(filename);
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, buffer);
     return getUploadUrl(filename);
   }

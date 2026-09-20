@@ -152,7 +152,8 @@ export function ImageUpload({
               : 'Arrastra imágenes aquí o haz clic para seleccionar'}
           </p>
           <p className="text-xs text-gray-500">
-            JPG, PNG o WebP (máx. 5MB cada una, máx. {maxImages} imágenes)
+            JPG, PNG o WebP (máx. 5MB cada una, máx. {maxImages} imágenes).
+            Se optimizan solas al subir.
           </p>
         </div>
       </div>
